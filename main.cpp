@@ -13,11 +13,8 @@ int main()
 {
     init();
 
-    // Creating a car color
-    int carR = 153, carG = 0, carB = 76;
-
-    // getting the spider to turn
-    bool spiderDown = true;
+    // The number of fireflies to be created
+    const int NUM_FIREFLIES = 75;
 
     // map of the scene that blips
     BITMAP* nightScene = create_bitmap(SCREEN_W, SCREEN_H);
@@ -35,12 +32,6 @@ int main()
         grassY.push_back(y);
         grassColor.push_back(g);
     }
-
-    int carX = 1;
-    bool carOnEdge = false;
-    int spiderStringLength = 0;
-
-    int spiderY = SCREEN_H - 217;
 
     // Main loop of code
     while(!key[KEY_ESC])
@@ -102,48 +93,66 @@ int main()
         circlefill(nightScene, SCREEN_W - 75, SCREEN_H - 260, 15, makecol(51, 102, 0));
         circlefill(nightScene, SCREEN_W - 75, SCREEN_H - 270, 15, makecol(51, 102, 0));
 
-        // creating the road for the car
-        rectfill(nightScene, 0, SCREEN_H, SCREEN_W, SCREEN_H - 50, makecol(64, 64, 64));
-
-        // Dealing with the car
-        rectfill(nightScene, carX, SCREEN_H - 40, carX + 60, SCREEN_H - 15, makecol(carR, carG, carB));
-        rectfill(nightScene, carX + 10, SCREEN_H - 55, carX + 50, SCREEN_H - 15, makecol(carR, carG, carB));
-        circlefill(nightScene, carX + 10, SCREEN_H - 13, 7, makecol(0, 0, 0));
-        circlefill(nightScene, carX + 50, SCREEN_H - 13, 7, makecol(0, 0, 0));
-        int headlights[] = {carX + 60, SCREEN_H - 30, carX + 60, SCREEN_H - 27, carX + 110, SCREEN_H - 17, carX + 110, SCREEN_H - 40};
-        polygon(nightScene, 4, headlights, makecol(218, 165, 32));
-        carX++;
-        if(carX == SCREEN_W + 25)
+        // Creating the fireflies
+        vector<int> fireflyX;
+        vector<int> fireflyY;
+        for(int i = 0; i < NUM_FIREFLIES; i++)
         {
-            carX = -150;
-            carR = rand() % 255;
-            carG = rand() % 255;
-            carB = rand() % 255;
+            int x = rand() % SCREEN_W;
+            int y = rand() % SCREEN_H - 150;
+            fireflyX.push_back(x);
+            fireflyY.push_back(y);
         }
-        rest(1);
 
-        // dealing with the spider
-        vline(nightScene, SCREEN_W - 150, SCREEN_H - 230, spiderY, makecol(255, 255, 255));
-        ellipsefill(nightScene, SCREEN_W - 150, spiderY, 10, 6, makecol(32, 32, 32));
-        line(nightScene, SCREEN_W - 150, spiderY, SCREEN_W - 135, spiderY - 7 , makecol(32, 32, 32));
-        line(nightScene, SCREEN_W - 150, spiderY, SCREEN_W - 135, spiderY - 3, makecol(32, 32, 32));
-        line(nightScene, SCREEN_W - 150, spiderY, SCREEN_W - 135, spiderY + 1, makecol(32, 32, 32));
-        line(nightScene, SCREEN_W - 150, spiderY, SCREEN_W - 135, spiderY + 5, makecol(32, 32, 32));
-        line(nightScene, SCREEN_W - 150, spiderY, SCREEN_W - 165, spiderY - 7 , makecol(32, 32, 32));
-        line(nightScene, SCREEN_W - 150, spiderY, SCREEN_W - 165, spiderY - 3, makecol(32, 32, 32));
-        line(nightScene, SCREEN_W - 150, spiderY, SCREEN_W - 165, spiderY + 1, makecol(32, 32, 32));
-        line(nightScene, SCREEN_W - 150, spiderY, SCREEN_W - 165, spiderY + 5, makecol(32, 32, 32));
-        if(spiderY > SCREEN_H - 120 || spiderY < SCREEN_H - 217)
-            spiderDown = !spiderDown;
-        if(spiderDown)
-            spiderY--;
-        else
-            spiderY++;
-        rest(1);
-
-
-
+        // Brightest firefly light followed by dimming fireflies then re-brightening fireflies to simulate them flashing
+        for(int i = 0; i < NUM_FIREFLIES; i++)
+        {
+            circlefill(nightScene, fireflyX[i], fireflyY[i], 1, makecol(255,255,0));
+        }
         blit(nightScene, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+        rest(200);
+
+        for(int i = 0; i < NUM_FIREFLIES; i++)
+        {
+            circlefill(nightScene, fireflyX[i], fireflyY[i], 1, makecol(255,215,0));
+        }
+        blit(nightScene, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+        rest(200);
+
+        for(int i = 0; i < NUM_FIREFLIES; i++)
+        {
+            circlefill(nightScene, fireflyX[i], fireflyY[i], 1, makecol(218,165,32));
+        }
+        blit(nightScene, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+        rest(200);
+
+        for(int i = 0; i < NUM_FIREFLIES; i++)
+        {
+            circlefill(nightScene, fireflyX[i], fireflyY[i], 1, makecol(0, 0, 0));
+        }
+        blit(nightScene, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+        rest(400);
+
+        for(int i = 0; i < NUM_FIREFLIES; i++)
+        {
+            circlefill(nightScene, fireflyX[i], fireflyY[i], 1, makecol(218,165,32));
+        }
+        blit(nightScene, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+        rest(200);
+
+        for(int i = 0; i < NUM_FIREFLIES; i++)
+        {
+            circlefill(nightScene, fireflyX[i], fireflyY[i], 1, makecol(255,215,0));
+        }
+        blit(nightScene, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+        rest(200);
+
+        for(int i = 0; i < NUM_FIREFLIES; i++)
+        {
+            circlefill(nightScene, fireflyX[i], fireflyY[i], 1, makecol(255,255,0));
+        }
+        blit(nightScene, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+        rest(200);
     }
     deinit();
     return 0;
